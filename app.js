@@ -12,11 +12,10 @@ app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 
-// Render the "home" layout for the main page and send the following msg
+// INDEX
 app.get('/', (req, res) => {
-    res.render('home', { msg: 'Handlebars are Cool!' });
-
-  })
+  res.render('events-index', { events: events });
+})
 
 // OUR MOCK ARRAY OF PROJECTS
 var events = [

@@ -1,20 +1,29 @@
 // Initialize express
 const express = require('express')
 const app = express()
-
-
-// require handlebars
-var exphbs = require('express-handlebars');
+const bodyParser = require('body-parser');
+const models = require('./db/models');
 
 // Use "main" as our default layout
-app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+const handlebars = require('handlebars');
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+const exphbs = require('express-handlebars');
+const hbs = exphbs.create({
+    defaultLayout: 'main',
+    handlebars: allowInsecurePrototypeAccess(handlebars),
+});
+
 // Use handlebars to render
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
-// INDEX
+// Index
 app.get('/', (req, res) => {
-  res.render('events-index', { events: events });
+  models.Event.findAll({ order: [['createdAt', 'DESC']] }).then(events => {
+    res.render('events-index', { events: events });
+  })
 })
 
 // OUR MOCK ARRAY OF PROJECTS
@@ -27,6 +36,20 @@ var events = [
 // INDEX
 app.get('/events', (req, res) => {
   res.render('events-index', { events: events });
+})
+
+// NEW
+app.get('/events/new', (req, res) => {
+  res.render('events-new', {});
+})
+
+// CREATE
+app.post('/events', (req, res) => {
+  models.Event.create(req.body).then(event => {
+    res.redirect(`/`);
+  }).catch((err) => {
+    console.log(err)
+  });
 })
 
 

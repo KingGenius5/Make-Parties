@@ -1,3 +1,3 @@
 # Make-Parties
 
-A JavaScript app that allows to *cough* make parties.
+An event planning app built in JavaScript.
